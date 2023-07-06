@@ -1,68 +1,52 @@
 package com.makara.SystemPhone.controller;
-// this is concept spring mvc
-
 import com.makara.SystemPhone.dto.BrandDTO;
+import com.makara.SystemPhone.dto.PageDTO;
 import com.makara.SystemPhone.entity.Brand;
 import com.makara.SystemPhone.mapper.BrandMapper;
 import com.makara.SystemPhone.service.BrandService;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Map;
 
 @RestController
 @RequestMapping("brands")
-@Slf4j
 public class BrandController {
-
     @Autowired
-    public BrandService brandService;
+    private BrandService brandService;
 
-    @ResponseStatus(HttpStatus.OK)
     @RequestMapping(method = RequestMethod.POST)
-    public ResponseEntity<?> create(@RequestBody BrandDTO brandDTO){
+    public ResponseEntity<?> create(@RequestBody BrandDTO brandDTO) {
         Brand brand = BrandMapper.INSTANCE.toBrand(brandDTO);
-       brand = brandService.create(brand);     // This is save data to db.
-        return ResponseEntity.ok(BrandMapper.INSTANCE.toBrandDTO(brand));
-        //This is headeler method.
+        brand = brandService.create(brand);
 
+        return ResponseEntity.ok(BrandMapper.INSTANCE.toBrandDTO(brand));
     }
+
     @GetMapping("{id}")
     public ResponseEntity<?> getOneBrand(@PathVariable("id") Integer brandId){
-
         Brand brand = brandService.getById(brandId);
-        return  ResponseEntity.ok(BrandMapper.INSTANCE.toBrandDTO(brand));
+        return ResponseEntity.ok(BrandMapper.INSTANCE.toBrandDTO(brand));
     }
+
     @PutMapping("{id}")
-    public ResponseEntity<?> update(@PathVariable("id") Integer brandId,@RequestBody BrandDTO brandDTO){
+    public ResponseEntity<?> update(@PathVariable("id") Integer brandId, @RequestBody BrandDTO brandDTO){
         Brand brand = BrandMapper.INSTANCE.toBrand(brandDTO);
-        Brand updatedBrand = brandService.update(brandId,brand);
+        Brand updatedBrand = brandService.update(brandId, brand);
         return ResponseEntity.ok(BrandMapper.INSTANCE.toBrandDTO(updatedBrand));
     }
+
     @GetMapping
-    public ResponseEntity<?> getBrands(){
-        List<BrandDTO> list = brandService.getBrands()
-                .stream()
-                .map(brand -> BrandMapper.INSTANCE.toBrandDTO(brand))
-                .collect(Collectors.toList());
-        return ResponseEntity.ok(list);
-        //it is maybe service for api clients.
-        //return ResponseEntity.ok(brandService.getBrands());
-    }
-    @GetMapping("filter")
-    public ResponseEntity<?> getBrands(@RequestParam("name") String name){
+    public ResponseEntity<?> getBrands(@RequestParam Map<String, String> params){
+        Page<Brand> page = brandService.getBrands(params);
 
-        List<BrandDTO> list = brandService.getBrands(name)
-                .stream()
-                .map(brand -> BrandMapper.INSTANCE.toBrandDTO(brand))
-                .collect(Collectors.toList());
+        PageDTO pageDTO = new PageDTO(page);
+        return ResponseEntity.ok(pageDTO);
 
-        return ResponseEntity.ok(list);
     }
 
 }
+
 

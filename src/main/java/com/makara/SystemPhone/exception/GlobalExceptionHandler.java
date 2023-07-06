@@ -11,7 +11,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<?> handleApiException(ApiException e){
 
         ErrorResponse errorResponse = new ErrorResponse(e.getStatus(),e.getMessage());
-        return ResponseEntity.status(e.getStatus()).body(errorResponse);
+        return ResponseEntity
+                .status(e.getStatus())
+                .body(errorResponse);
     }
 
 }
