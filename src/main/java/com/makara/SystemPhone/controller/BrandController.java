@@ -21,7 +21,6 @@ public class BrandController {
     public ResponseEntity<?> create(@RequestBody BrandDTO brandDTO) {
         Brand brand = BrandMapper.INSTANCE.toBrand(brandDTO);
         brand = brandService.create(brand);
-
         return ResponseEntity.ok(BrandMapper.INSTANCE.toBrandDTO(brand));
     }
 
@@ -43,9 +42,10 @@ public class BrandController {
         Page<Brand> page = brandService.getBrands(params);
 
         PageDTO pageDTO = new PageDTO(page);
-        return ResponseEntity.ok(pageDTO);
 
+        return ResponseEntity.ok(pageDTO);
     }
+
 
 }
 

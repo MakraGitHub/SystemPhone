@@ -5,6 +5,7 @@ import com.makara.SystemPhone.exception.ResourceNotFoundException;
 import com.makara.SystemPhone.repository.BrandRepository;
 import com.makara.SystemPhone.service.BrandService;
 import com.makara.SystemPhone.service.impl.util.PageUtil;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import com.makara.SystemPhone.spc.BrandFilter;
@@ -15,10 +16,10 @@ import java.util.List;
 import java.util.Map;
 
 @Service
+@RequiredArgsConstructor
 public class BrandServiceImpl implements BrandService {
-
     @Autowired
-    private BrandRepository brandRepository;
+    private final BrandRepository brandRepository;
 
     @Override
     public Brand create(Brand brand) {
